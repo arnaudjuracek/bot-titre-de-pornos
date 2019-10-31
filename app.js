@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const fetch = require('node-fetch')
 const XML = require('xml2js')
-const translate = require('google-translate-api')
+const translate = require('@vitalets/google-translate-api')
 const nodemailer = require('nodemailer')
 
 require('dotenv').config({ path: path.resolve(__dirname, '.env') })
