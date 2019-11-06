@@ -51,6 +51,12 @@ const OPTIONS = Object.freeze({
       })
     )
 
+    if (!OPTIONS.mail.to) {
+      console.log('No MAILTO defined, outputing titles instead:\n')
+      console.log(translations.join('\n'))
+      return
+    }
+
     OPTIONS.verbose && console.log('Sending mail…')
     const pattern = template.match(/{{ translation }}((.|\n)*){{ \/translation }}/gm)[0]
     const transporter = nodemailer.createTransport(OPTIONS.transport)
