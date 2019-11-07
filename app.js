@@ -6,6 +6,7 @@ const XML = require('xml2js')
 const translate = require('@vitalets/google-translate-api')
 const nodemailer = require('nodemailer')
 
+const dictionary = require(path.join(__dirname, 'dictionary.json'))
 require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
 const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8')
@@ -44,12 +45,7 @@ const OPTIONS = Object.freeze({
     const titles = obj.rss.channel[0].item.map(({ title }) => title[0])
 
     OPTIONS.verbose && console.log('Translating titles…')
-    const translations = await Promise.all(
-      titles.map(async t => {
-        const { text } = await translate(t, OPTIONS.translation)
-        return text
-      })
-    )
+    const translations = await Promise.all(titles.map(computeTranslation))
 
     if (!OPTIONS.mail.to) {
       console.log('No MAILTO defined, outputing titles instead:\n')
@@ -80,3 +76,21 @@ const OPTIONS = Object.freeze({
     process.exit(1)
   }
 })()
+
+async function computeTranslation (title) {
+  // This seems to help Google translate identify more common translatable words
+  title = title.toLowerCase()
+
+  let { text: translation } = await translate(title, OPTIONS.translation)
+
+  // Force-translate specific words defined in an external dictionary
+  for (const ref in dictionary) {
+    const re = new RegExp(ref, 'gi')
+    const word = Array.isArray(dictionary[ref])
+      ? dictionary[ref][Math.floor(Math.random() * dictionary[ref].length)]
+      : dictionary[ref]
+    translation = translation.replace(re, word)
+  }
+
+  return translation
+}
