@@ -13,11 +13,11 @@ const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8')
 
 const OPTIONS = Object.freeze({
   verbose: process.env.VERBOSE,
-  url: 'https://www.pornhub.com/rss',
+  url: process.env.FEED,
   translation: { from: 'en', to: 'fr' },
   mail: {
     subject: '🐔',
-    from: `titre_de_pornos <${process.env.MAILTO}>`,
+    from: `titre_de_pornos <${(process.env.MAILTO || '').split(',').shift()}>`,
     to: process.env.MAILTO
   },
   transport: {
