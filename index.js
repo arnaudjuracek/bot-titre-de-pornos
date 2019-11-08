@@ -14,7 +14,7 @@ const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8')
 const OPTIONS = Object.freeze({
   verbose: process.env.VERBOSE,
   url: process.env.FEED,
-  translation: { from: 'en', to: 'fr' },
+  translation: { to: 'fr' },
   mail: {
     subject: '🐔',
     from: `titre_de_pornos <${(process.env.MAILTO || '').split(',').shift()}>`,
